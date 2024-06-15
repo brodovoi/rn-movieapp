@@ -16,27 +16,22 @@ const MovieDetailsScreen = ({ route }) => {
   const { movie } = route.params;
   const navigation = useNavigation();
   const [genres, setGenres] = useState([]);
+  const [isLoadingGenres, setIsLoadingGenres] = useState(true);
 
   useEffect(() => {
     const getGenres = async () => {
-      const fetchedGenres = await fetchGenres();
-      setGenres(fetchedGenres);
+      try {
+        const fetchedGenres = await fetchGenres();
+        setGenres(fetchedGenres);
+      } catch (error) {
+        console.error('Ошибка при загрузке жанров:', error);
+      } finally {
+        setIsLoadingGenres(false);
+      }
     };
 
     getGenres();
   }, []);
-
-  const getGenreNames = () => {
-    return (
-      <View style={styles.genresContainer}>
-        {genres
-          .filter((genre) => movie.genre_ids.includes(genre.id))
-          .map((genre, index) => (
-            <GenreTag key={index} genreName={genre.name} />
-          ))}
-      </View>
-    );
-  };
 
   const hours = Math.floor(movie.duration / 60);
   const minutes = movie.duration % 60;
@@ -64,8 +59,18 @@ const MovieDetailsScreen = ({ route }) => {
           Дата выхода: {movie.release_date}
         </Text>
 
-        <Text style={styles.genres}>Жанры:</Text>
-        {/* {getGenreNames()} */}
+        {genres.length > 0 && (
+          <View style={styles.genresContainer}>
+            <Text style={styles.genres}>Жанры:</Text>
+            <View style={styles.genresContainer}>
+              {genres
+                .filter((genre) => movie.genre_ids.includes(genre.id))
+                .map((genre, index) => (
+                  <GenreTag key={index} genreName={genre.name} />
+                ))}
+            </View>
+          </View>
+        )}
 
         <Text style={styles.duration}>Продолжительность: {durationString}</Text>
         <Text style={styles.actorsTitle}>Актеры:</Text>

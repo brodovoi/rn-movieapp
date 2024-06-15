@@ -161,5 +161,19 @@ export const getRandomMovie = async (language) => {
       name: actor.name,
       profile_path: actor.profile_path,
     })),
+    release_date: randomMovie.release_date, // добавляем дату выпуска фильма
   };
+};
+
+// Функция для получения имени жанра по его id
+export const getGenreNameById = (genreId, genres) => {
+  const genre = genres.find((genre) => genre.id === genreId);
+  return genre ? genre.name : '';
+};
+
+export const fetchGenres = async () => {
+  const response = await tmdbApi.get(
+    `/genre/movie/list?api_key=${TMDB_API_KEY}`
+  );
+  return response.data.genres;
 };

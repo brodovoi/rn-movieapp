@@ -11,7 +11,7 @@ const GenreTag = ({ genreName }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#6C38CC',
     padding: 5,
     borderRadius: 10,
     marginRight: 5,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
-    color: '#333',
+    color: '#ffff',
   },
 });
 

@@ -6,15 +6,23 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/native';
-import { getRandomMovie, addBookmark } from '../utils/api';
+import {
+  getRandomMovie,
+  addBookmark,
+  getGenreNameById,
+  fetchGenres,
+} from '../utils/api';
+import RatingIcon from '../assets/icons/star';
+import DurationIcon from '../assets/icons/time';
+import GenreTag from '../components/GenreTag/GenreTag';
 
 const SwipeScreen = ({ onBookmarkAdded }) => {
   const [currentMovie, setCurrentMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [genres, setGenres] = useState([]);
   const navigation = useNavigation();
 
   const language = 'ru';
@@ -26,10 +34,14 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
   const fetchRandomMovie = async () => {
     setIsLoading(true);
     try {
-      const randomMovie = await getRandomMovie(language);
+      const [randomMovie, genres] = await Promise.all([
+        getRandomMovie(language),
+        fetchGenres(),
+      ]);
       setCurrentMovie(randomMovie);
+      setGenres(genres);
     } catch (error) {
-      console.error('Error fetching random movie:', error);
+      console.error('Ошибка при загрузке случайного фильма:', error);
     } finally {
       setIsLoading(false);
     }
@@ -40,8 +52,8 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
       navigation.navigate('MovieDetails', {
         movie: {
           ...currentMovie,
-          actors: currentMovie.actors || [], // Убедитесь, что actors всегда массив
-          genre_ids: currentMovie.genre_ids || [], // Убедитесь, что genre_ids всегда массив
+          actors: currentMovie.actors || [],
+          genre_ids: currentMovie.genre_ids || [],
         },
       });
     }
@@ -61,8 +73,7 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
         });
         console.log('Added to bookmarks:', currentMovie);
         updateCurrentMovie();
-        // Вызываем колбэк, чтобы обновить список закладок
-        onBookmarkAdded();
+        // onBookmarkAdded();
       } catch (error) {
         console.error('Error adding to bookmarks:', error);
       }
@@ -109,15 +120,28 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
                 </View>
                 <View style={styles.movieInfo}>
                   <Text style={styles.title}>{movie.title}</Text>
-                  <Text style={styles.originalTitle}>
-                    Original Title: {movie.original_title}
-                  </Text>
-                  <Text style={styles.rating}>
-                    Rating: {movie.vote_average}
-                  </Text>
-                  <Text style={styles.runtime}>
-                    Runtime: {movie.runtime} minutes
-                  </Text>
+                  <View style={styles.movieDetailsContainer}>
+                    <Text style={styles.movieDetails}>
+                      <RatingIcon /> {movie.vote_average.toFixed(1)}
+                    </Text>
+                    <Text style={styles.movieDetails}>
+                      <DurationIcon /> {movie.duration} minutes
+                    </Text>
+                    <Text style={styles.movieDetails}>
+                      {new Date(movie.release_date).getFullYear()}
+                    </Text>
+                  </View>
+                  <View style={styles.genreContainer}>
+                    <Text style={styles.genreTitle}>Жанры:</Text>
+                    <View style={styles.genreTagsContainer}>
+                      {movie.genre_ids.map((genreId) => (
+                        <GenreTag
+                          key={genreId}
+                          genreName={getGenreNameById(genreId, genres)}
+                        />
+                      ))}
+                    </View>
+                  </View>
                 </View>
               </View>
             </TouchableOpacity>
@@ -155,15 +179,19 @@ const styles = StyleSheet.create({
   movieInfo: {
     padding: 20,
   },
-  runtime: {
-    fontSize: 16,
-    color: '#fff',
-    marginBottom: 10,
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#ffffff',
+  },
+  movieDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  movieDetails: {
+    fontSize: 14,
     color: '#ffffff',
   },
   posterContainer: {
@@ -176,16 +204,18 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  originalTitle: {
-    fontSize: 14,
-    color: 'gray',
-    marginBottom: 5,
+  genreContainer: {
+    marginTop: 10,
   },
-  rating: {
+  genreTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'orange',
-    marginBottom: 10,
+    color: '#ffffff',
+    marginBottom: 5,
+  },
+  genreTagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   loadingContainer: {
     flex: 1,

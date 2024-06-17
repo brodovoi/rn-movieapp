@@ -178,9 +178,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
+    position: 'relative',
   },
   movieInfo: {
     padding: 20,
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    width: '100%',
+
+    backgroundColor:
+      'rgba(0, 0, 0, 0.7)' /* Цвет фона: черный с прозрачностью 70% */,
+    backdropFilter: 'blur(10px)' /* Размытие фона */,
+    WebkitBackdropFilter: 'blur(10px)' /* Для поддержки вебкит-браузеров */,
+    borderRadius: 10,
   },
   title: {
     fontSize: 20,
@@ -199,13 +210,13 @@ const styles = StyleSheet.create({
   },
   posterContainer: {
     width: '100%',
-    height: '70%',
+    height: '100%',
     marginBottom: 10,
   },
   poster: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+    // resizeMode: '100%',
   },
   genreContainer: {
     marginTop: 10,

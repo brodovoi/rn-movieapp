@@ -14,6 +14,7 @@ import HomeScreen from './screens/HomeScreen';
 import SwipeScreen from './screens/SwipeScreen';
 import BookmarksScreen from './screens/BookmarksScreen';
 import MovieDetailsScreen from './screens/MovieDetailsScreen';
+import SwipeIcon from './assets/icons/swipe';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -74,16 +75,6 @@ function AppTabs() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          // if (route.name === 'Home') {
-          //   iconName = 'home-outline';
-          // } else if (route.name === 'Movies') {
-          //   iconName = 'film-outline';
-          // } else if (route.name === 'ProfileStack') {
-          //   iconName = 'person-outline';
-          // } else if (route.name === 'Swipe') {
-          //   iconName = 'shuffle-outline'; // Иконка для экрана свайпа карточек
-          // }
-
           if (route.name === 'Home') {
             iconName = 'home-outline';
           } else if (route.name === 'Movies') {
@@ -92,6 +83,7 @@ function AppTabs() {
             iconName = 'person-outline';
           } else if (route.name === 'Swipe') {
             iconName = 'shuffle-outline'; // Иконка для экрана свайпа карточек
+            // return <SwipeIcon color={color} size={size} />;
           } else if (route.name === 'Bookmarks') {
             iconName = 'bookmark-outline'; // Иконка для экрана закладок
           }

@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
   },
   actorImage: {
     width: 110,
-    height: 120,
-    resizeMode: 'repeat',
+    height: 140,
+    resizeMode: 'cover',
     marginBottom: 5,
     borderRadius: 10,
     backgroundColor: '#666',

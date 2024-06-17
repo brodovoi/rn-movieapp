@@ -11,36 +11,46 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { fetchGenres } from '../utils/api';
 import GenreTag from '../components/GenreTag/GenreTag';
+import RatingIcon from '../assets/icons/star';
+import DurationIcon from '../assets/icons/time';
+import DateIcon from '../assets/icons/date';
 
 const MovieDetailsScreen = ({ route }) => {
   const { movie } = route.params;
   const navigation = useNavigation();
   const [genres, setGenres] = useState([]);
-  const [isLoadingGenres, setIsLoadingGenres] = useState(true);
 
   useEffect(() => {
     const getGenres = async () => {
-      try {
-        const fetchedGenres = await fetchGenres();
-        setGenres(fetchedGenres);
-      } catch (error) {
-        console.error('Ошибка при загрузке жанров:', error);
-      } finally {
-        setIsLoadingGenres(false);
-      }
+      const fetchedGenres = await fetchGenres();
+      setGenres(fetchedGenres);
     };
 
     getGenres();
   }, []);
 
-  const hours = Math.floor(movie.duration / 60);
-  const minutes = movie.duration % 60;
-  const durationString = `${hours}ч ${minutes}м`;
+  const getGenreNames = () => {
+    return (
+      <View style={styles.genresContainer}>
+        {genres
+          .filter((genre) => movie.genre_ids.includes(genre.id))
+          .map((genre, index) => (
+            <GenreTag key={index} genreName={genre.name} />
+          ))}
+      </View>
+    );
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('ru-RU', options);
+  };
 
   return (
     <ScrollView
-      contentContainerStyle={styles.container}
-      style={styles.scrollView}>
+      style={styles.scrollView}
+      contentContainerStyle={styles.contentContainer}>
       <Image
         style={styles.poster}
         source={{
@@ -53,26 +63,27 @@ const MovieDetailsScreen = ({ route }) => {
         <Text style={styles.originalTitle}>
           Оригинальное название: {movie.original_title}
         </Text>
-        <Text style={styles.rating}>Рейтинг: {movie.vote_average}</Text>
-        <Text>Оригинальный язык: {movie.original_language}</Text>
-        <Text style={styles.releaseDate}>
-          Дата выхода: {movie.release_date}
-        </Text>
 
-        {genres.length > 0 && (
-          <View style={styles.genresContainer}>
-            <Text style={styles.genres}>Жанры:</Text>
-            <View style={styles.genresContainer}>
-              {genres
-                .filter((genre) => movie.genre_ids.includes(genre.id))
-                .map((genre, index) => (
-                  <GenreTag key={index} genreName={genre.name} />
-                ))}
-            </View>
-          </View>
-        )}
+        {/* <Text>Оригинальный язык: {movie.original_language}</Text> */}
 
-        <Text style={styles.duration}>Продолжительность: {durationString}</Text>
+        {/*  */}
+        <View style={styles.movieDetailsContainer}>
+          <Text style={styles.movieDetails}>
+            <RatingIcon /> {movie.vote_average.toFixed(1)}
+          </Text>
+          <Text style={styles.movieDetails}>
+            <DurationIcon /> {movie.duration} minutes
+          </Text>
+          <Text style={styles.movieDetails}>
+            <DateIcon />
+            {formatDate(movie.release_date)}
+          </Text>
+        </View>
+        {/*  */}
+
+        <Text style={styles.genres}>Жанры:</Text>
+        {getGenreNames()}
+
         <Text style={styles.actorsTitle}>Актеры:</Text>
         <View style={styles.actorsContainer}>
           <ScrollView horizontal={true}>
@@ -99,36 +110,34 @@ const MovieDetailsScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 20,
-    paddingBottom: 300,
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  contentContainer: {
+    // paddingVertical: 20,
+  },
+  poster: {
+    width: '100%',
+    height: 345,
+    resizeMode: 'cover',
+    marginBottom: 20,
   },
   info: {
     paddingHorizontal: 20,
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-    paddingBottom: 200,
   },
   genresContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
-  poster: {
-    width: '100%',
-    height: '100%',
-    // maxHeight: 300,
-    resizeMode: 'contain',
     marginBottom: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
   },
   originalTitle: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 10,
   },
   rating: {
@@ -142,43 +151,45 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 20,
   },
-  releaseDate: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
+
   genres: {
     fontSize: 16,
     marginBottom: 10,
   },
-  duration: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
+
   actorsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },
   actorsContainer: {
-    flexDirection: 'row',
     marginBottom: 20,
   },
   actorContainer: {
-    marginRight: 20,
-    marginBottom: 10,
+    marginRight: 5,
     alignItems: 'center',
+    width: 115,
   },
   actorImage: {
-    width: 100,
-    height: 150,
-    resizeMode: 'cover',
+    width: 110,
+    height: 120,
+    resizeMode: 'repeat',
     marginBottom: 5,
     borderRadius: 10,
     backgroundColor: '#666',
   },
   actorName: {
     textAlign: 'center',
-    marginTop: 5,
+  },
+  movieDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  movieDetails: {
+    fontSize: 14,
+    color: '#000',
   },
 });
 

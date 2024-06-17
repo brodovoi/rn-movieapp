@@ -177,3 +177,10 @@ export const fetchGenres = async () => {
   );
   return response.data.genres;
 };
+
+export const getMovieTrailer = async (movieId) => {
+  const response = await tmdbApi.get(
+    `/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`
+  );
+  return response.data.results;
+};

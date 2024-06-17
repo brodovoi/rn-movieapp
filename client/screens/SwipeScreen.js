@@ -18,6 +18,7 @@ import {
 import RatingIcon from '../assets/icons/star';
 import DurationIcon from '../assets/icons/time';
 import GenreTag from '../components/GenreTag/GenreTag';
+import DateIcon from '../assets/icons/date';
 
 const SwipeScreen = ({ onBookmarkAdded }) => {
   const [currentMovie, setCurrentMovie] = useState(null);
@@ -54,6 +55,7 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
           ...currentMovie,
           actors: currentMovie.actors || [],
           genre_ids: currentMovie.genre_ids || [],
+          language, // Передаем параметр языка
         },
       });
     }
@@ -128,6 +130,7 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
                       <DurationIcon /> {movie.duration} minutes
                     </Text>
                     <Text style={styles.movieDetails}>
+                      <DateIcon />
                       {new Date(movie.release_date).getFullYear()}
                     </Text>
                   </View>

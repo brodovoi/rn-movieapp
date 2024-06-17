@@ -19,11 +19,13 @@ import RatingIcon from '../assets/icons/star';
 import DurationIcon from '../assets/icons/time';
 import GenreTag from '../components/GenreTag/GenreTag';
 import DateIcon from '../assets/icons/date';
+import ReturnIcon from '../assets/icons/return';
 
 const SwipeScreen = ({ onBookmarkAdded }) => {
   const [currentMovie, setCurrentMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [genres, setGenres] = useState([]);
+  const [previousMovie, setPreviousMovie] = useState(null);
   const navigation = useNavigation();
 
   const language = 'ru';
@@ -83,6 +85,9 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
   };
 
   const updateCurrentMovie = async () => {
+    if (currentMovie) {
+      setPreviousMovie(currentMovie);
+    }
     setIsLoading(true);
     try {
       const randomMovie = await getRandomMovie(language);
@@ -91,6 +96,13 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
       console.error('Error updating current movie:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleBackButton = () => {
+    if (previousMovie) {
+      setCurrentMovie(previousMovie);
+      setPreviousMovie(null);
     }
   };
 
@@ -110,6 +122,13 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
           renderCard={(movie) => (
             <TouchableOpacity onPress={handlePressMovieDetails}>
               <View style={styles.card}>
+                {previousMovie && (
+                  <TouchableOpacity
+                    onPress={handleBackButton}
+                    style={styles.backButton}>
+                    <ReturnIcon />
+                  </TouchableOpacity>
+                )}
                 <View style={styles.posterContainer}>
                   <Image
                     style={styles.poster}
@@ -167,6 +186,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    right: 10,
+    zIndex: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 10,
+    borderRadius: '50%',
+  },
   card: {
     width: '100%',
     height: '90%',
@@ -186,11 +214,9 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     width: '100%',
-
-    backgroundColor:
-      'rgba(0, 0, 0, 0.7)' /* Цвет фона: черный с прозрачностью 70% */,
-    backdropFilter: 'blur(10px)' /* Размытие фона */,
-    WebkitBackdropFilter: 'blur(10px)' /* Для поддержки вебкит-браузеров */,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
     borderRadius: 10,
   },
   title: {
@@ -216,7 +242,6 @@ const styles = StyleSheet.create({
   poster: {
     width: '100%',
     height: '100%',
-    // resizeMode: '100%',
   },
   genreContainer: {
     marginTop: 10,

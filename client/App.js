@@ -15,6 +15,7 @@ import SwipeScreen from './screens/SwipeScreen';
 import BookmarksScreen from './screens/BookmarksScreen';
 import MovieDetailsScreen from './screens/MovieDetailsScreen';
 import SwipeIcon from './assets/icons/swipe';
+import ActorDetailsScreen from './screens/ActorDetailsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,10 +83,9 @@ function AppTabs() {
           } else if (route.name === 'ProfileStack') {
             iconName = 'person-outline';
           } else if (route.name === 'Swipe') {
-            iconName = 'shuffle-outline'; // Иконка для экрана свайпа карточек
-            // return <SwipeIcon color={color} size={size} />;
+            iconName = 'shuffle-outline';
           } else if (route.name === 'Bookmarks') {
-            iconName = 'bookmark-outline'; // Иконка для экрана закладок
+            iconName = 'bookmark-outline';
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -140,6 +140,7 @@ export default function App() {
         <Stack.Screen name="Auth" component={AuthStack} />
         <Stack.Screen name="AppTabs" component={AppTabs} />
         <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} />
+        <Stack.Screen name="ActorDetails" component={ActorDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   Button,
+  TouchableOpacity,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -47,6 +48,10 @@ const MovieDetailsScreen = ({ route }) => {
     return date.toLocaleDateString('ru-RU', options);
   };
 
+  const navigateToActorDetails = (actor) => {
+    navigation.navigate('ActorDetails', { actor });
+  };
+
   return (
     <ScrollView
       style={styles.scrollView}
@@ -63,9 +68,7 @@ const MovieDetailsScreen = ({ route }) => {
         <Text style={styles.originalTitle}>
           Оригинальное название: {movie.original_title}
         </Text>
-
         {/* <Text>Оригинальный язык: {movie.original_language}</Text> */}
-
         {/*  */}
         <View style={styles.movieDetailsContainer}>
           <Text style={styles.movieDetails}>
@@ -80,29 +83,30 @@ const MovieDetailsScreen = ({ route }) => {
           </Text>
         </View>
         {/*  */}
-
         <Text style={styles.genres}>Жанры:</Text>
         {getGenreNames()}
-
         <Text style={styles.actorsTitle}>Актеры:</Text>
         <View style={styles.actorsContainer}>
           <ScrollView horizontal={true}>
             {movie.actors &&
               movie.actors.map((actor, index) => (
-                <View key={index} style={styles.actorContainer}>
-                  <Image
-                    style={styles.actorImage}
-                    source={{
-                      uri: `https://image.tmdb.org/t/p/w500${actor.profile_path}`,
-                    }}
-                  />
-                  <Text style={styles.actorName}>{actor.name}</Text>
-                </View>
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => navigateToActorDetails(actor)}>
+                  <View style={styles.actorContainer}>
+                    <Image
+                      style={styles.actorImage}
+                      source={{
+                        uri: `https://image.tmdb.org/t/p/w500${actor.profile_path}`,
+                      }}
+                    />
+                    <Text style={styles.actorName}>{actor.name}</Text>
+                  </View>
+                </TouchableOpacity>
               ))}
           </ScrollView>
         </View>
         <Text style={styles.overview}>{movie.overview}</Text>
-
         <Button title="Назад" onPress={() => navigation.goBack()} />
       </View>
     </ScrollView>

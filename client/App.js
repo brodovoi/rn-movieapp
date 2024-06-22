@@ -9,7 +9,7 @@ import SignUpScreen from './screens/SignUpScreen';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import EditProfileScreen from './screens/EditProfileScreen';
-import MoviesScreen from './screens/MoviesScreen';
+import SearchScreen from './screens/SearchScreen';
 import HomeScreen from './screens/HomeScreen';
 import SwipeScreen from './screens/SwipeScreen';
 import BookmarksScreen from './screens/BookmarksScreen';
@@ -78,8 +78,8 @@ function AppTabs() {
 
           if (route.name === 'Home') {
             iconName = 'home-outline';
-          } else if (route.name === 'Movies') {
-            iconName = 'film-outline';
+          } else if (route.name === 'Search') {
+            iconName = 'search-outline';
           } else if (route.name === 'ProfileStack') {
             iconName = 'person-outline';
           } else if (route.name === 'Swipe') {
@@ -94,7 +94,7 @@ function AppTabs() {
         tabBarInactiveTintColor: 'gray',
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Movies" component={MoviesScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Swipe" component={SwipeScreen} />
       <Tab.Screen name="Bookmarks" component={BookmarksScreen} />
       <Tab.Screen

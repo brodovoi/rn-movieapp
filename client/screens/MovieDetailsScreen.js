@@ -5,21 +5,28 @@ import {
   Text,
   Image,
   StyleSheet,
-  Button,
   TouchableOpacity,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
-
 import { useNavigation } from '@react-navigation/native';
-import { fetchGenres } from '../utils/api';
+import { fetchGenres, getMovieTrailer } from '../utils/api';
 import GenreTag from '../components/GenreTag/GenreTag';
 import RatingIcon from '../assets/icons/star';
 import DurationIcon from '../assets/icons/time';
 import DateIcon from '../assets/icons/date';
+import ArrowBackIcon from '../assets/icons/arrow-left';
+import BookmarkIcon from '../assets/icons/bookmark';
+import PlayIcon from '../assets/icons/play'; // Импортируем иконку воспроизведения
+import { WebView } from 'react-native-webview';
 
 const MovieDetailsScreen = ({ route }) => {
   const { movie } = route.params;
   const navigation = useNavigation();
   const [genres, setGenres] = useState([]);
+  const [trailerKey, setTrailerKey] = useState(null);
+  const [isTrailerVisible, setIsTrailerVisible] = useState(false);
+  const [isLoadingTrailer, setIsLoadingTrailer] = useState(false);
 
   useEffect(() => {
     const getGenres = async () => {
@@ -52,24 +59,58 @@ const MovieDetailsScreen = ({ route }) => {
     navigation.navigate('ActorDetails', { actor });
   };
 
+  const fetchTrailer = async () => {
+    setIsLoadingTrailer(true);
+    try {
+      // Определяем язык фильма
+      const language = movie.original_language || 'en'; // Используем язык фильма или по умолчанию английский
+      const trailers = await getMovieTrailer(movie._id, language);
+      const youtubeTrailer = trailers.find(
+        (trailer) => trailer.site === 'YouTube'
+      );
+      if (youtubeTrailer) {
+        setTrailerKey(youtubeTrailer.key);
+        setIsTrailerVisible(true);
+      }
+    } catch (error) {
+      console.error('Error fetching trailer:', error);
+    } finally {
+      setIsLoadingTrailer(false);
+    }
+  };
+
   return (
     <ScrollView
       style={styles.scrollView}
       contentContainerStyle={styles.contentContainer}>
-      <Image
-        style={styles.poster}
-        source={{
-          uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        }}
-      />
-
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}>
+        <ArrowBackIcon />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.bookmarkButton}>
+        <BookmarkIcon />
+      </TouchableOpacity>
+      <View style={styles.posterContainer}>
+        <Image
+          style={styles.poster}
+          source={{
+            uri: `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`,
+          }}
+        />
+        <TouchableOpacity style={styles.playButton} onPress={fetchTrailer}>
+          {isLoadingTrailer ? (
+            <ActivityIndicator size="large" color="#fff" />
+          ) : (
+            <PlayIcon />
+          )}
+        </TouchableOpacity>
+      </View>
       <View style={styles.info}>
         <Text style={styles.title}>{movie.title}</Text>
         <Text style={styles.originalTitle}>
           Оригинальное название: {movie.original_title}
         </Text>
-        {/* <Text>Оригинальный язык: {movie.original_language}</Text> */}
-        {/*  */}
         <View style={styles.movieDetailsContainer}>
           <Text style={styles.movieDetails}>
             <RatingIcon /> {movie.vote_average.toFixed(1)}
@@ -82,7 +123,6 @@ const MovieDetailsScreen = ({ route }) => {
             {formatDate(movie.release_date)}
           </Text>
         </View>
-        {/*  */}
         <Text style={styles.genres}>Жанры:</Text>
         {getGenreNames()}
         <Text style={styles.actorsTitle}>Актеры:</Text>
@@ -107,8 +147,26 @@ const MovieDetailsScreen = ({ route }) => {
           </ScrollView>
         </View>
         <Text style={styles.overview}>{movie.overview}</Text>
-        <Button title="Назад" onPress={() => navigation.goBack()} />
       </View>
+      <Modal
+        visible={isTrailerVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsTrailerVisible(false)}>
+        <TouchableOpacity
+          style={styles.modalBackground}
+          activeOpacity={1}
+          onPress={() => setIsTrailerVisible(false)}>
+          <TouchableOpacity activeOpacity={1} style={styles.videoContainer}>
+            <WebView
+              source={{
+                uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1`,
+              }}
+              style={styles.webView}
+            />
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </ScrollView>
   );
 };
@@ -119,13 +177,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   contentContainer: {
-    // paddingVertical: 20,
+    position: 'relative',
+  },
+  posterContainer: {
+    position: 'relative',
   },
   poster: {
     width: '100%',
     height: 345,
     resizeMode: 'cover',
     marginBottom: 20,
+  },
+  playButton: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    zIndex: 10,
+    transform: [{ translateX: -25 }, { translateY: -25 }],
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   info: {
     paddingHorizontal: 20,
@@ -155,12 +229,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 20,
   },
-
   genres: {
     fontSize: 16,
     marginBottom: 10,
   },
-
   actorsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -194,6 +266,46 @@ const styles = StyleSheet.create({
   movieDetails: {
     fontSize: 14,
     color: '#000',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 10,
+    zIndex: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 50,
+  },
+  bookmarkButton: {
+    position: 'absolute',
+    top: 40,
+    right: 10,
+    zIndex: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 50,
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  videoContainer: {
+    width: '90%',
+    aspectRatio: 16 / 9,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  webView: {
+    flex: 1,
   },
 });
 

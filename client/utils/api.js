@@ -118,6 +118,7 @@ export const getRandomMovie = async (language) => {
     _id: movieId,
     title: randomMovie.title,
     poster_path: randomMovie.poster_path,
+    backdrop_path: randomMovie.backdrop_path,
     vote_average: randomMovie.vote_average,
     overview: randomMovie.overview,
     duration: movieDetails.runtime,
@@ -145,10 +146,21 @@ export const fetchGenres = async () => {
   return response.data.genres;
 };
 
-export const getMovieTrailer = async (movieId) => {
-  const response = await tmdbApi.get(
-    `/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`
-  );
+// export const getMovieTrailer = async (movieId, language) => {
+//   const response = await fetch(
+//     `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=&language=${language}`
+//   );
+//   const data = await response.json();
+//   return data.results;
+// };
+
+export const getMovieTrailer = async (movieId, language) => {
+  const response = await tmdbApi.get(`/movie/${movieId}/videos`, {
+    params: {
+      api_key: TMDB_API_KEY,
+      language: language,
+    },
+  });
   return response.data.results;
 };
 

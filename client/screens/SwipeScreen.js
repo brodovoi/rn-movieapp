@@ -187,94 +187,6 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
   );
 };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#0c0c0c',
-//   },
-//   backButton: {
-//     position: 'absolute',
-//     top: 20,
-//     right: 10,
-//     zIndex: 10,
-//     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-//     padding: 10,
-//     borderRadius: 50,
-//   },
-//   card: {
-//     width: '100%',
-//     height: '90%',
-//     borderRadius: 10,
-//     overflow: 'hidden',
-//     backgroundColor: '#0c0c0c',
-//     shadowColor: '#ffffff',
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.8,
-//     shadowRadius: 2,
-//     elevation: 5,
-//     position: 'relative',
-//   },
-//   movieInfo: {
-//     padding: 20,
-//     position: 'absolute',
-//     left: 0,
-//     bottom: 0,
-//     width: '100%',
-//     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-//     backdropFilter: 'blur(10px)',
-//     WebkitBackdropFilter: 'blur(10px)',
-//     borderRadius: 10,
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//     marginBottom: 10,
-//     color: '#ffffff',
-//   },
-//   movieDetailsContainer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//   },
-//   movieDetails: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     fontSize: 14,
-//   },
-//   detailText: {
-//     marginLeft: 5,
-//     color: '#ffffff',
-//   },
-//   posterContainer: {
-//     width: '100%',
-//     height: '100%',
-//     marginBottom: 10,
-//   },
-//   poster: {
-//     width: '100%',
-//     height: '100%',
-//   },
-//   genreContainer: {
-//     marginTop: 10,
-//   },
-//   genreTitle: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     color: '#ffffff',
-//     marginBottom: 5,
-//   },
-//   genreTagsContainer: {
-//     flexDirection: 'row',
-//     flexWrap: 'wrap',
-//   },
-//   loadingContainer: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#0c0c0c',
-//   },
-// });
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -286,7 +198,10 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 10,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 50,
   },
   card: {

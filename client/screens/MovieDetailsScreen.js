@@ -17,7 +17,7 @@ import DurationIcon from '../assets/icons/time';
 import DateIcon from '../assets/icons/date';
 import ArrowBackIcon from '../assets/icons/arrow-left';
 import BookmarkIcon from '../assets/icons/bookmark';
-import PlayIcon from '../assets/icons/play'; // Импортируем иконку воспроизведения
+import PlayIcon from '../assets/icons/play';
 import { WebView } from 'react-native-webview';
 
 const MovieDetailsScreen = ({ route }) => {
@@ -111,18 +111,26 @@ const MovieDetailsScreen = ({ route }) => {
         <Text style={styles.originalTitle}>
           Оригинальное название: {movie.original_title}
         </Text>
+
         <View style={styles.movieDetailsContainer}>
-          <Text style={styles.movieDetails}>
-            <RatingIcon /> {movie.vote_average.toFixed(1)}
-          </Text>
-          <Text style={styles.movieDetails}>
-            <DurationIcon /> {movie.duration} minutes
-          </Text>
-          <Text style={styles.movieDetails}>
+          <View style={styles.movieDetails}>
+            <RatingIcon />
+            <Text style={styles.detailText}>
+              {movie.vote_average.toFixed(1)}
+            </Text>
+          </View>
+          <View style={styles.movieDetails}>
+            <DurationIcon />
+            <Text style={styles.detailText}>{movie.duration} minutes</Text>
+          </View>
+          <View style={styles.movieDetails}>
             <DateIcon />
-            {formatDate(movie.release_date)}
-          </Text>
+            <Text style={styles.detailText}>
+              {formatDate(movie.release_date)}
+            </Text>
+          </View>
         </View>
+
         <Text style={styles.genres}>Жанры:</Text>
         {getGenreNames()}
         <Text style={styles.actorsTitle}>Актеры:</Text>
@@ -174,7 +182,7 @@ const MovieDetailsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0c0c0c',
   },
   contentContainer: {
     position: 'relative',
@@ -213,10 +221,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#ffffff',
   },
   originalTitle: {
     fontSize: 18,
     marginBottom: 10,
+    color: '#ffffff',
   },
   rating: {
     fontSize: 18,
@@ -228,15 +238,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'left',
     marginBottom: 20,
+    color: '#ffffff',
   },
   genres: {
     fontSize: 16,
     marginBottom: 10,
+    color: '#ffffff',
   },
   actorsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#ffffff',
   },
   actorsContainer: {
     marginBottom: 20,
@@ -256,6 +269,7 @@ const styles = StyleSheet.create({
   },
   actorName: {
     textAlign: 'center',
+    color: '#ffffff',
   },
   movieDetailsContainer: {
     flexDirection: 'row',
@@ -264,8 +278,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   movieDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
     fontSize: 14,
-    color: '#000',
+  },
+  detailText: {
+    marginLeft: 5,
+    color: '#ffffff',
   },
   backButton: {
     position: 'absolute',

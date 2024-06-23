@@ -146,19 +146,12 @@ export const fetchGenres = async () => {
   return response.data.genres;
 };
 
-// export const getMovieTrailer = async (movieId, language) => {
-//   const response = await fetch(
-//     `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=&language=${language}`
-//   );
-//   const data = await response.json();
-//   return data.results;
-// };
-
 export const getMovieTrailer = async (movieId, language) => {
   const response = await tmdbApi.get(`/movie/${movieId}/videos`, {
     params: {
       api_key: TMDB_API_KEY,
-      language: language,
+      // language: language,
+      language: 'ru-RU',
     },
   });
   return response.data.results;

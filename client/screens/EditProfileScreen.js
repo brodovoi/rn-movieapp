@@ -1,185 +1,3 @@
-// import React, { useState } from 'react';
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   StyleSheet,
-//   Image,
-//   TouchableOpacity,
-//   Alert,
-// } from 'react-native';
-// import { Colors, Gaps } from '../components/tokens';
-// import DateTimePickerModal from 'react-native-modal-datetime-picker';
-// import { Button } from '../components/Button/Button';
-// import * as ImagePicker from 'expo-image-picker';
-// import { updateUserProfile } from '../utils/api';
-
-// const EditProfileScreen = ({ route, navigation }) => {
-//   const { user } = route.params;
-//   const [name, setName] = useState(user.name);
-//   const [email, setEmail] = useState(user.email);
-//   const [phone, setPhone] = useState(user.phone || '');
-//   const [birthdate, setBirthdate] = useState(
-//     new Date(user.birthdate) || new Date()
-//   );
-//   const [photo, setPhoto] = useState(user.photo);
-//   const [open, setOpen] = useState(false);
-//   const [photoChanged, setPhotoChanged] = useState(false);
-
-//   const handleChoosePhoto = async () => {
-//     let result = await ImagePicker.launchImageLibraryAsync({
-//       mediaTypes: ImagePicker.MediaTypeOptions.All,
-//       allowsEditing: true,
-//       aspect: [4, 3],
-//       quality: 1,
-//     });
-
-//     if (!result.cancelled && result.assets.length > 0) {
-//       setPhoto(result.assets[0].uri);
-//       setPhotoChanged(true);
-//     }
-//   };
-
-//   const handleSave = async () => {
-//     try {
-//       const updatedUser = await updateUserProfile({
-//         name: name,
-//         email: email,
-//         phone: phone,
-//         birthdate: birthdate,
-//         photo: photo,
-//       });
-//       console.log('Обновленное: ', updatedUser);
-
-//       Alert.alert('Success', 'Profile updated successfully');
-//       navigation.navigate('Profile', { updatedUser });
-//     } catch (error) {
-//       console.error('Error updating profile:', error);
-//       Alert.alert('Error', 'Failed to update profile. Please try again later.');
-//     }
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.content}>
-//         {/* <TouchableOpacity onPress={handleChoosePhoto}>
-//           <Image
-//             source={
-//               photo
-//                 ? { uri: `http://192.168.1.90:5000/${photo}` }
-//                 : require('../assets/icons/avatar.png')
-//             }
-//             style={styles.profileImage}
-//             resizeMode="cover"
-//             onError={() => {
-//               setPhoto('');
-//             }}
-//           />
-//           <Text style={styles.editPhotoText}>Edit Photo</Text>
-//         </TouchableOpacity> */}
-
-//         <TouchableOpacity onPress={handleChoosePhoto}>
-//           <Image
-//             source={
-//               photo ? { uri: photo } : require('../assets/icons/avatar.png')
-//             }
-//             style={styles.profileImage}
-//             resizeMode="cover"
-//             onError={() => {
-//               setPhoto('');
-//             }}
-//           />
-//           <Text style={styles.editPhotoText}>Edit Photo</Text>
-//         </TouchableOpacity>
-
-//         <Text style={styles.label}>Name</Text>
-//         <TextInput style={styles.input} value={name} onChangeText={setName} />
-//         <Text style={styles.label}>Email</Text>
-//         <TextInput
-//           style={styles.input}
-//           value={email}
-//           onChangeText={setEmail}
-//           keyboardType="email-address"
-//         />
-//         <Text style={styles.label}>Phone</Text>
-//         <TextInput
-//           style={styles.input}
-//           value={phone}
-//           onChangeText={setPhone}
-//           keyboardType="phone-pad"
-//         />
-//         <Text style={styles.label}>Birthdate</Text>
-//         <TouchableOpacity onPress={() => setOpen(true)}>
-//           <Text style={styles.input}>{birthdate.toDateString()}</Text>
-//         </TouchableOpacity>
-//         <DateTimePickerModal
-//           isVisible={open}
-//           mode="date"
-//           onConfirm={(date) => {
-//             setOpen(false);
-//             setBirthdate(date);
-//           }}
-//           onCancel={() => {
-//             setOpen(false);
-//           }}
-//           headerTextIOSStyle={{ color: '#fff' }}
-//           pickerContainerStyleIOS={{ backgroundColor: '#000' }}
-//           textColor={'#fff'}
-//           backgroundColor={'#000'}
-//         />
-//         <Button text="Save" onPress={handleSave} />
-//       </View>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     justifyContent: 'center',
-//     flex: 1,
-//     padding: 30,
-//     backgroundColor: Colors.black,
-//   },
-//   content: {
-//     gap: Gaps.g16,
-//   },
-//   profileImage: {
-//     width: 100,
-//     height: 100,
-//     borderRadius: 50,
-//     marginBottom: 20,
-//     alignSelf: 'center',
-//   },
-//   profileImagePlaceholder: {
-//     width: 100,
-//     height: 100,
-//     borderRadius: 50,
-//     backgroundColor: '#fff',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginBottom: 20,
-//   },
-//   profileImagePlaceholderText: {
-//     color: '#fff',
-//   },
-//   editPhotoText: {
-//     color: '#fff',
-//     marginBottom: 20,
-//     textAlign: 'center',
-//   },
-//   label: {
-//     color: '#fff',
-//   },
-//   input: {
-//     backgroundColor: '#2e2d3d',
-//     color: '#fff',
-//     padding: 10,
-//     borderRadius: 5,
-//   },
-// });
-
-// export default EditProfileScreen;
-
 import React, { useState } from 'react';
 import {
   View,
@@ -195,6 +13,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Button } from '../components/Button/Button';
 import * as ImagePicker from 'expo-image-picker';
 import { updateUserProfile } from '../utils/api';
+import { BASE_URL } from '../utils/config';
 
 const EditProfileScreen = ({ route, navigation }) => {
   const { user } = route.params;
@@ -262,7 +81,11 @@ const EditProfileScreen = ({ route, navigation }) => {
           style={styles.photoContainer}>
           <Image
             source={
-              photo ? { uri: photo } : require('../assets/icons/avatar.png')
+              photo
+                ? { uri: photo }
+                : user.photo
+                ? { uri: `${BASE_URL}/${user.photo}` }
+                : require('../assets/icons/avatar.png')
             }
             style={styles.profileImage}
             resizeMode="cover"
@@ -393,8 +216,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dateText: {
-    color: '#fff', // Make sure the text is visible
-    fontSize: 16, // Adjust font size if needed
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

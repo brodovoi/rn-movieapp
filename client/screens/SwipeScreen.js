@@ -20,8 +20,6 @@ import DurationIcon from '../assets/icons/time';
 import GenreTag from '../components/GenreTag/GenreTag';
 import DateIcon from '../assets/icons/date';
 import ReturnIcon from '../assets/icons/return';
-import CrossIcon from '../assets/icons/cross-white';
-import LikeIcon from '../assets/icons/like';
 
 const SwipeScreen = ({ onBookmarkAdded }) => {
   const [currentMovie, setCurrentMovie] = useState(null);
@@ -183,44 +181,6 @@ const SwipeScreen = ({ onBookmarkAdded }) => {
           stackSize={2}
           verticalSwipe={false}
           cardVerticalMargin={20}
-          overlayLabels={{
-            left: {
-              title: <CrossIcon style={styles.overlayIcon} />,
-              style: {
-                label: {
-                  backgroundColor: 'red',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 50,
-                  height: 50,
-                },
-                wrapper: {
-                  flexDirection: 'column',
-                  alignItems: 'center', // Центрируем иконку по горизонтали
-                  justifyContent: 'center', // Центрируем иконку по вертикали
-                  marginTop: 20,
-                  marginLeft: -20,
-                },
-              },
-            },
-            right: {
-              title: <LikeIcon />,
-              style: {
-                label: {
-                  backgroundColor: 'green',
-                  color: 'white',
-                  fontSize: 24,
-                },
-                wrapper: {
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  justifyContent: 'flex-start',
-                  marginTop: 20,
-                  marginLeft: 20,
-                },
-              },
-            },
-          }}
         />
       </TouchableOpacity>
     </View>
@@ -315,10 +275,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0c0c0c',
-  },
-  overlayIcon: {
-    width: 30,
-    height: 30,
   },
 });
 
